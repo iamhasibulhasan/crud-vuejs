@@ -65,7 +65,8 @@
 								<td>
 									<a class="btn btn-sm btn-info" href="#">View</a>
 									<a class="btn btn-sm btn-warning" href="#">Edit</a>
-									<a class="btn btn-sm btn-danger" href="#">Delete</a>
+									<a @click="deleteUser(user.id, $event)" class="btn btn-sm btn-danger"
+										href="#">Delete</a>
 								</td>
 							</tr>
 
@@ -138,6 +139,37 @@
 							timer: 1500
 						})
 					}
+				},
+				deleteUser: function (id, event) {
+					event.preventDefault();
+					Swal.fire({
+						title: 'Are you sure?',
+						text: "You won't be able to revert this!",
+						icon: 'warning',
+						showCancelButton: true,
+						confirmButtonColor: '#3085d6',
+						cancelButtonColor: '#d33',
+						confirmButtonText: 'Yes, delete it!'
+					}).then((result) => {
+						if (result.isConfirmed) {
+							Swal.fire({
+								position: 'top-end',
+								icon: 'success',
+								title: 'User has been deleted',
+								showConfirmButton: false,
+								timer: 1500
+							});
+
+
+							axios.get('inc/deleteUser.php?id=' + id).then(function (response) {
+								root.getAllUsers();
+							});
+
+
+						} else {
+							Swal.fire('User data safe !');
+						}
+					})
 				}
 			},
 			created: function () {
