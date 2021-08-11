@@ -112,7 +112,7 @@
 			},
 			methods: {
 				getAllUsers: function () {
-					axios.get('inc/data.php').then(function (response) {
+					axios.get('inc/user.php?action=read').then(function (response) {
 						root.users = response.data;
 					});
 				},
@@ -121,7 +121,7 @@
 						// alert("All Fields are required!");
 						Swal.fire('All fields are required!')
 					} else {
-						axios.post('inc/addUser.php', {
+						axios.post('inc/user.php?action=add', {
 							name: root.user.name,
 							email: root.user.email,
 							cell: root.user.cell,
@@ -161,7 +161,7 @@
 							});
 
 
-							axios.get('inc/deleteUser.php?id=' + id).then(function (response) {
+							axios.get('inc/user.php?action=delete&id=' + id).then(function (response) {
 								root.getAllUsers();
 							});
 
