@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>Vue Js Basics</title>
+	<title>Vue Js Crud</title>
 	<!-- ALL CSS FILES  -->
 	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
 	<link rel="stylesheet" href="assets/css/style.css">
@@ -16,8 +16,8 @@
 	<div id="root">
 
 
-		<div class="wrap-table shadow">
-			<div class="card">
+		<div class="wrap-table">
+			<div class="card shadow">
 				<div class="card-body">
 					<h2>All Data</h2>
 					<table class="table table-striped">
@@ -32,60 +32,14 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td>1</td>
-								<td>Hasibul Hasan</td>
-								<td>hasibul@gmail.com</td>
-								<td>01717700811</td>
+
+
+							<tr v-for="(user, i) in users">
+								<td>{{ i+1 }}</td>
+								<td>{{ user.name }}</td>
+								<td>{{ user.email }}</td>
+								<td>{{ user.cell }}</td>
 								<td><img src="assets/media/img/pp_photo/img (1).jpg" alt=""></td>
-								<td>
-									<a class="btn btn-sm btn-info" href="#">View</a>
-									<a class="btn btn-sm btn-warning" href="#">Edit</a>
-									<a class="btn btn-sm btn-danger" href="#">Delete</a>
-								</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>Hasibul Hasan</td>
-								<td>hasibul@gmail.com</td>
-								<td>01717700811</td>
-								<td><img src="assets/media/img/pp_photo/img (2).jpg" alt=""></td>
-								<td>
-									<a class="btn btn-sm btn-info" href="#">View</a>
-									<a class="btn btn-sm btn-warning" href="#">Edit</a>
-									<a class="btn btn-sm btn-danger" href="#">Delete</a>
-								</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>Hasibul Hasan</td>
-								<td>hasibul@gmail.com</td>
-								<td>01717700811</td>
-								<td><img src="assets/media/img/pp_photo/img (3).jpg" alt=""></td>
-								<td>
-									<a class="btn btn-sm btn-info" href="#">View</a>
-									<a class="btn btn-sm btn-warning" href="#">Edit</a>
-									<a class="btn btn-sm btn-danger" href="#">Delete</a>
-								</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>Hasibul Hasan</td>
-								<td>hasibul@gmail.com</td>
-								<td>01717700811</td>
-								<td><img src="assets/media/img/pp_photo/img (4).jpg" alt=""></td>
-								<td>
-									<a class="btn btn-sm btn-info" href="#">View</a>
-									<a class="btn btn-sm btn-warning" href="#">Edit</a>
-									<a class="btn btn-sm btn-danger" href="#">Delete</a>
-								</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>Hasibul Hasan</td>
-								<td>hasibul@gmail.com</td>
-								<td>01717700811</td>
-								<td><img src="assets/media/img/pp_photo/img (5).jpg" alt=""></td>
 								<td>
 									<a class="btn btn-sm btn-info" href="#">View</a>
 									<a class="btn btn-sm btn-warning" href="#">Edit</a>
@@ -116,9 +70,30 @@
 	<script src="assets/js/bootstrap.min.js"></script>
 	<script src="assets/js/custom.js"></script>
 
-	<!-- Vue Js Load -->
+	<!-- Vue Js & Axios Load -->
+	<script src="assets/js/axios.min.js"></script>
 	<script src="assets/js/vue.js"></script>
 	<script src="assets/js/vue-router.js"></script>
+
+	<script>
+		const root = new Vue({
+			el: ('#root'),
+			data: {
+				users: []
+			},
+			methods: {
+				getAllUsers() {
+					axios.get('inc/data.php').then(function (response) {
+						console.log(response.data);
+					});
+				}
+			},
+			created: function () {
+				this.getAllUsers();
+			}
+		});
+	</script>
+
 </body>
 
 </html>
