@@ -2,7 +2,7 @@
 
 $conn = new mysqli("localhost","root","","vue_curd");
 
-$data = $conn->query("SELECT * FROM users ORDER By id DESC");
+$data = $conn->query("SELECT * FROM users ORDER By id ASC");
 
 $all_users = [];
 

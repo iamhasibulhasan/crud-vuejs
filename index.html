@@ -17,8 +17,28 @@
 
 	<div id="root">
 
-
 		<div class="wrap-table">
+			<!-- Add New User Card Start -->
+
+			<div class="card shadow w-50 mb-1">
+				<div class="card-body">
+					<h1>Add New User</h1>
+					<div class="form-group">
+						<input v-model="user.name" type="text" class="form-control" placeholder="Name">
+					</div>
+					<div class="form-group">
+						<input v-model="user.email" type="text" class="form-control" placeholder="Email">
+					</div>
+					<div class="form-group">
+						<input v-model="user.cell" type="text" class="form-control" placeholder="Cell">
+					</div>
+					<div class="form-group">
+						<input @click="addNewUser" type="submit" class="btn btn-primary btn-block" value="Add">
+					</div>
+				</div>
+			</div>
+
+			<!-- Add New User Card End -->
 			<div class="card shadow">
 				<div class="card-body">
 					<h2>All Data</h2>
@@ -67,6 +87,7 @@
 
 
 	<!-- JS FILES  -->
+	<script src="assets/js/sweetalert2@11.js"></script>
 	<script src="assets/js/jquery-3.4.1.min.js"></script>
 	<script src="assets/js/popper.min.js"></script>
 	<script src="assets/js/bootstrap.min.js"></script>
@@ -81,13 +102,42 @@
 		const root = new Vue({
 			el: ('#root'),
 			data: {
-				users: []
+				users: [],
+				user: {
+					name: "",
+					email: "",
+					cell: ""
+				}
 			},
 			methods: {
 				getAllUsers: function () {
 					axios.get('inc/data.php').then(function (response) {
 						root.users = response.data;
 					});
+				},
+				addNewUser: function () {
+					if (root.user.name == "" || root.user.email == "" || root.user.cell == "") {
+						// alert("All Fields are required!");
+						Swal.fire('All fields are required!')
+					} else {
+						axios.post('inc/addUser.php', {
+							name: root.user.name,
+							email: root.user.email,
+							cell: root.user.cell,
+						}).then(function (response) {
+							root.user.name = "";
+							root.user.email = "";
+							root.user.cell = "";
+							root.getAllUsers();
+						});
+						Swal.fire({
+							position: 'top-end',
+							icon: 'success',
+							title: 'User added successful.',
+							showConfirmButton: false,
+							timer: 1500
+						})
+					}
 				}
 			},
 			created: function () {
