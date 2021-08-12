@@ -69,3 +69,19 @@
 
 
     }
+    // Search user by name action
+    if($action == 'search'){
+
+        $txt = $_GET['s'];
+        $data = $conn->query("SELECT * FROM users WHERE name LIKE '%$txt%'");
+        
+
+        $result = [];
+        while($search_data = $data->fetch_assoc()){
+            array_push($result, $search_data);
+        }
+
+        echo json_encode($result);
+
+
+    }

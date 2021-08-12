@@ -77,6 +77,8 @@
 			<!-- Add New User Card End -->
 			<div class="card shadow">
 				<div class="card-body">
+					<input @keyup="searchUser" v-model="search" type="text" class="form-control float-right w-25"
+						name="" id="" placeholder="search by name...">
 					<h2>All Data</h2>
 					<table class="table table-striped">
 						<thead>
@@ -152,7 +154,8 @@
 					email: '',
 					cell: '',
 					photo: ''
-				}
+				},
+				search: ''
 			},
 			methods: {
 
@@ -243,6 +246,14 @@
 						root.single_user.cell = response.data.cell;
 						root.single_user.photo = response.data.photo;
 
+					});
+				},
+				// Search by name
+				searchUser: function () {
+					let txt = root.search;
+
+					axios.get('inc/user.php?action=search&s=' + txt).then(function (response) {
+						root.users = response.data;
 					});
 				}
 			},
