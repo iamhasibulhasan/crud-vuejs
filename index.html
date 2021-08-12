@@ -17,6 +17,39 @@
 
 	<div id="root">
 
+		<!-- View single user modal start -->
+
+		<div id="single_user" class="modal fade">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+
+					<div class="modal-body">
+						<img class="shadow"
+							style="width: 200px;height: 200px;border: 10px solid white;border-radius: 50%;display: block;margin: auto;"
+							:src="'media/users/' + single_user.photo" alt="">
+						<h2 style="text-align: center;">{{ single_user.name }}</h2>
+						<table class="table table-hover">
+							<tr>
+								<td>Name</td>
+								<td>{{ single_user.name }}</td>
+							</tr>
+							<tr>
+								<td>Email</td>
+								<td>{{ single_user.email }}</td>
+							</tr>
+							<tr>
+								<td>Cell</td>
+								<td>{{ single_user.cell }}</td>
+							</tr>
+						</table>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+		<!-- View single user modal end -->
+
 		<div class="wrap-table">
 			<!-- Add New User Card Start -->
 
@@ -31,6 +64,9 @@
 					</div>
 					<div class="form-group">
 						<input v-model="user.cell" type="text" class="form-control" placeholder="Cell">
+					</div>
+					<div class="form-group">
+						<input ref="photo" type="file" class="form-control">
 					</div>
 					<div class="form-group">
 						<input @click="addNewUser" type="submit" class="btn btn-primary btn-block" value="Add">
@@ -61,9 +97,10 @@
 								<td>{{ user.name }}</td>
 								<td>{{ user.email }}</td>
 								<td>{{ user.cell }}</td>
-								<td><img src="assets/media/img/pp_photo/img (1).jpg" alt=""></td>
+								<td><img :src="'media/users/' + user.photo" alt=""></td>
 								<td>
-									<a class="btn btn-sm btn-info" href="#">View</a>
+									<a @click="singleUser(user.id)" class="btn btn-sm btn-info" data-toggle="modal"
+										href="#single_user">View</a>
 									<a class="btn btn-sm btn-warning" href="#">Edit</a>
 									<a @click="deleteUser(user.id, $event)" class="btn btn-sm btn-danger"
 										href="#">Delete</a>
@@ -107,28 +144,50 @@
 				user: {
 					name: "",
 					email: "",
-					cell: ""
+					cell: "",
+					photo: ""
+				},
+				single_user: {
+					name: '',
+					email: '',
+					cell: '',
+					photo: ''
 				}
 			},
 			methods: {
+
+				// Get all users
 				getAllUsers: function () {
 					axios.get('inc/user.php?action=read').then(function (response) {
 						root.users = response.data;
 					});
 				},
+
+				// Add new user
 				addNewUser: function () {
 					if (root.user.name == "" || root.user.email == "" || root.user.cell == "") {
 						// alert("All Fields are required!");
 						Swal.fire('All fields are required!')
 					} else {
-						axios.post('inc/user.php?action=add', {
-							name: root.user.name,
-							email: root.user.email,
-							cell: root.user.cell,
+
+						root.user.photo = root.$refs.photo.files[0];
+
+						let newUser = new FormData();
+						newUser.append('name', this.user.name);
+						newUser.append('email', this.user.email);
+						newUser.append('cell', this.user.cell);
+						newUser.append('photo', this.user.photo);
+
+						axios.post('inc/user.php?action=add', newUser, {
+							header: {
+								'Content-Type': 'multipart/form-data'
+							}
 						}).then(function (response) {
+							console.log(response.data);
 							root.user.name = "";
 							root.user.email = "";
 							root.user.cell = "";
+							root.user.photo = "";
 							root.getAllUsers();
 						});
 						Swal.fire({
@@ -140,6 +199,8 @@
 						})
 					}
 				},
+
+				// Delete user 
 				deleteUser: function (id, event) {
 					event.preventDefault();
 					Swal.fire({
@@ -170,6 +231,19 @@
 							Swal.fire('User data safe !');
 						}
 					})
+				},
+
+				// Single user view
+				singleUser: function (id) {
+					axios.get('inc/user.php?action=singleUser&id=' + id).then(function (response) {
+						console.log(response.data);
+
+						root.single_user.name = response.data.name;
+						root.single_user.email = response.data.email;
+						root.single_user.cell = response.data.cell;
+						root.single_user.photo = response.data.photo;
+
+					});
 				}
 			},
 			created: function () {

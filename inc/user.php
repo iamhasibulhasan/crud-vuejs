@@ -28,11 +28,23 @@
     // Add new user action
     if($action == 'add'){
 
-        $name = $data->name;
-        $email = $data->email;
-        $cell = $data->cell;
+        // $name = $data->name;
+        // $email = $data->email;
+        // $cell = $data->cell;
 
-        $conn->query("INSERT INTO users (name, email, cell) VALUES ('$name', '$email', '$cell')");
+        $photo_name = $_FILES['photo']['name'];
+        $photo_tmp_name = $_FILES['photo']['tmp_name'];
+
+        // Upload profile photo
+        move_uploaded_file($photo_tmp_name, '../media/users/'. $photo_name);
+
+
+        $name = $_POST['name'];
+        $email = $_POST['email'];
+        $cell = $_POST['cell'];
+        $photo = $photo_name;
+
+        $conn->query("INSERT INTO users (name, email, cell, photo) VALUES ('$name', '$email', '$cell', '$photo')");
 
     }
 
@@ -40,7 +52,20 @@
     if($action == 'delete'){
 
         $id = $_GET['id'];
-        
+
         $conn->query("DELETE FROM users WHERE id = '$id'");
+
+    }
+
+    // Single user view action
+    if($action == 'singleUser'){
+
+        $id = $_GET['id'];
+
+        $data = $conn->query("SELECT * FROM users WHERE id = '$id'");
+        $single_user = $data->fetch_assoc();
+
+        echo json_encode($single_user);
+
 
     }
